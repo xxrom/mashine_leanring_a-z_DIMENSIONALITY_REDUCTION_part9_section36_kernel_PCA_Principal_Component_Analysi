@@ -1,4 +1,10 @@
-# Kernel PCA
+# Kernel PCA  (Principal Component Analysis)
+# линейное разделение получится (даже если изначально они были не такие)
+# даже если круг и он в другом круге, получится линейное разделение
+# уменьшение размерности данных, спользуя PCA
+# разделяются данные в 3D (если изначально в 2D было)
+# потом группы разделяются одной плоскостью и на эту плоскость
+# проецируются все точки и разделяютя классы используя гаусов колокол
 
 # Importing the libraries
 import numpy as np
@@ -20,6 +26,15 @@ from sklearn.preprocessing import StandardScaler
 sc_X = StandardScaler()
 X_train = sc_X.fit_transform(X_train)
 X_test = sc_X.transform(X_test)
+
+# Applying Kernel PCA
+from sklearn.decomposition import KernelPCA
+kpca = KernelPCA(
+  n_components = 2, # (2) количество переменных которых надо оставить
+  kernel = 'rbf' # gaussian Kernel(колокл), works almost every time fine =)
+)
+X_train = kpca.fit_transform(X_train)
+X_test = kpca.transform(X_test)
 
 # Fitting Logistic Regression to the Training set
 from sklearn.linear_model import LogisticRegression
@@ -54,7 +69,7 @@ for i, j in enumerate(np.unique(y_set)):
   plt.scatter(X_set[y_set == j, 0], X_set[y_set == j, 1],
               c = ListedColormap(('red', 'green'))(i), label = j)
 plt.title('Logistic Regression (Training set)')
-plt.xlabel('Age')
-plt.ylabel('Estimated Salary')
-plt.legend() # в правом верхнем углу рисует соотношение точек и из значений
+plt.xlabel('PC1')
+plt.ylabel('PC2')
+plt.legend()
 plt.show()
